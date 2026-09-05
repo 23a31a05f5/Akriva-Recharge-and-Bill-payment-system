@@ -1,30 +1,31 @@
-from flask import Flask
-from db import get_db_connection
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def home():
-    return "Welcome to BillEase"
+    return render_template("index.html")
 
 
-@app.route("/users")
-def users():
-
-    connection = get_db_connection()
-
-    cursor = connection.cursor(dictionary=True)
-
-    cursor.execute("SELECT * FROM users")
-
-    users_data = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    return users_data
+@app.route("/recharge")
+def recharge():
+    return render_template("recharge.html")
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.route("/bills")
+def bills():
+    return render_template("bills.html")
+
+
+@app.route("/history")
+def history():
+    return render_template("history.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+app.run(debug=True)
