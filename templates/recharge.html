@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Recharge page</title>
-    </head>
-    <body>
-        <h1>Mobile Recharge</h1>
-        <p>Mobile Number:</p>
-        <input type="text">
-        <p>Amount</p>
-        <input type="number">
+
+<head>
+    <title>Akriva - Recharge</title>
+</head>
+
+<body>
+
+    <h1>Mobile Recharge</h1>
+
+    <form action="/recharge" method="POST">
+
+        <label>Mobile Number:</label>
+        <input type="text" name="mobile">
+
         <br><br>
-        <button>Recharge Now</button>
-    </body>
+
+        <label>Amount:</label>
+        <input type="number" name="amount">
+
+        <br><br>
+
+        <button type="submit">Recharge Now</button>
+
+    </form>
+
+</body>
+
 </html>
