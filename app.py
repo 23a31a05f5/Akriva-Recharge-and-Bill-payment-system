@@ -57,7 +57,25 @@ def bills():
         print("Bill payment successful")
     return render_template("bills.html")
 
+@app.route("/register",methods=["GET","POST"])
+def register():
+    if request.method=="POST":
+        name=request.form["name"]
+        email=request.form["email"]
+        password=request.form["password"]
 
+        connection=get_db_connection()
+        cursor=connection.cursor()
+        sql="""INSERT into users(name,email,password)
+        values(%s,%s,%s)
+        """
+        values=(name,email,password)
+        cursor.execute(sql,values)
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return render_template("successregister.html")
+    return render_template("register.html")
 @app.route("/history")
 def history():
     return render_template("history.html")
