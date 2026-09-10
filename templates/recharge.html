@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Akriva - Recharge</title>
+    <title>Akriva Mobile Recharge</title>
 </head>
 
 <body>
@@ -12,12 +11,34 @@
     <form action="/recharge" method="POST">
 
         <label>Mobile Number:</label>
-        <input type="text" name="mobile">
+        <input
+            type="tel"
+            name="mobile"
+            maxlength="10"
+            required
+        >
 
         <br><br>
 
-        <label>Amount:</label>
-        <input type="number" name="amount">
+        <label>Select Operator:</label>
+
+        <select name="operator" required>
+            <option value="">-- Select Operator --</option>
+            <option value="Jio">Jio</option>
+            <option value="Airtel">Airtel</option>
+            <option value="Vi">Vi</option>
+            <option value="BSNL">BSNL</option>
+        </select>
+
+        <br><br>
+
+        <label>Recharge Amount:</label>
+        <input
+            type="number"
+            name="amount"
+            min="10"
+            required
+        >
 
         <br><br>
 
@@ -26,5 +47,4 @@
     </form>
 
 </body>
-
 </html>
