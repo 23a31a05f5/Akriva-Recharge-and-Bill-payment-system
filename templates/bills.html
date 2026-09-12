@@ -7,24 +7,26 @@
         <h1>Bill payment</h1>
         <form action="/bills" method="POST">
             <label>Customer Name:</label>
-            <input type="text" name="customer_name">
+            <input type="text" name="customer_name" required>
             <br><br>
-            <label>Bill ID:</label>
-            <input type="number" name="bill_id">
+            <label>Bill Number:</label>
+            <input type="text" name="bill_number" required>
             <br><br>
 
             <label>Select bill type:</labellabel>
-            <select name="bill_type">
-                <option>Electricity</option>
-                <option>Mobile</option>
-                <option>DTH</option>
-            </select>
+            <select name="bill_type" required>
+            <option value="">Select Bill Type</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Water">Water</option>
+            <option value="Internet">Internet</option>
+            <option value="Gas">Gas</option>
+    </select>
             <br><br>
 
             <label>Amount:</label>
             <input type="number" name="amount">
             <br><br>
-            <button type="submit">Pay NOW</button>
+            <button type="submit">Pay Bill</button>
     </form>
     </body>
 </html>

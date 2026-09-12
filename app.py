@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,session
+from flask import Flask, render_template, request,session,redirect
 from db import get_db_connection
 app = Flask(__name__)
 
@@ -10,20 +10,23 @@ def home():
 
 @app.route("/recharge", methods=["GET", "POST"])
 def recharge():
+    if "user_id" not in session:
+        return redirect("/login")
 
     if request.method == "POST":
 
         mobile = request.form["mobile"]
         operator=request.form["operator"]
         amount = request.form["amount"]
-        
+        user_id=session["user_id"]
         connection=get_db_connection()
         cursor=connection.cursor()
-        sql="""INSERT INTO recharges(mobile,operator,amount)
-        values(%s,%s,%s)"""
+        sql="""INSERT INTO recharges(mobile,operator,amount,user_id)
+        values(%s,%s,%s,%s)"""
         values=(mobile,
                 operator,
-                amount)
+                amount,
+                user_id)
         cursor.execute(sql,values)
         connection.commit()
         cursor.close()
@@ -36,28 +39,33 @@ def recharge():
 
 @app.route("/bills",methods=["POST","GET"])
 def bills():
+    if "user_id" not in session:
+        return redirect("/login")
+        
     if request.method=="POST":
         customer_name=request.form["customer_name"]
-        bill_id=request.form["bill_id"]
+        bill_number=request.form["bill_number"]
         bill_type=request.form["bill_type"]
         Amount=request.form["amount"]
+        user_id =session["user_id"]
 
         connection=get_db_connection()
         cursor=connection.cursor()
         sql="""
             INSERT INTO transactions
-            (customer_name,bill_id,bill_type,Amount)
-            values(%s,%s,%s,%s)
+            (customer_name,bill_number,bill_type,Amount,user_id)
+            values(%s,%s,%s,%s,%s)
             """
         values=(customer_name,
-                bill_id,
+                bill_number,
                 bill_type,
-                Amount)
+                Amount,
+                user_id)
         cursor.execute(sql,values)
         connection.commit()
         cursor.close()
         connection.close()
-        print("Bill payment successful")
+        return render_template("successbills.html")
     return render_template("bills.html")
 
 @app.route("/register",methods=["GET","POST"])
@@ -100,11 +108,48 @@ def login():
         else:
             return "Invalid email or password"
     return render_template("login.html")
-
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 @app.route("/history")
 def history():
+    if "user_id" not in session:
+        return "please login first"
     return render_template("history.html")
+@app.route("/history/bills")
+def historybills():
+    if "user_id" not in session:
+        return"Please Login first"
+    user_id=session["user_id"]
+    connection=get_db_connection()
+    cursor=connection.cursor()
+    sql="""select bill_number,bill_type,Amount from transactions 
+    where user_id=%s"""
+    values=(user_id,)
+    cursor.execute(sql,values)
+    transactions=cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return render_template("history_bills.html",
+                           transactions=transactions,history_type="Bills")
 
+@app.route("/history/recharges")
+def history_recharges():
+    if "user_id" not in session:
+        return "please login first"
+    user_id=session["user_id"]
+    connection=get_db_connection()
+    cursor=connection.cursor()
+    sql="""select mobile,operator,amount from recharges
+    where user_id=%s"""
+    values=(user_id,)
+    cursor.execute(sql,values)
+    transactions=cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return render_template("history_recharges.html",transactions=transactions,
+                           history_type="Recharges")
 
 @app.route("/about")
 def about():
